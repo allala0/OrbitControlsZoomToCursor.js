@@ -1,6 +1,6 @@
 <h1 align="center"><b>OrbitControlsZoomToCursor.js</b></h1>
 <p align="center">
-    <img src="./icon.png" style="max-width: 15%;">
+    <img src="./icon.png" style="width: 15%;">
 </p>
 <br>
 <h2>What is <b>OrbitControlsZoomToCursor.js</b>?</h2>
