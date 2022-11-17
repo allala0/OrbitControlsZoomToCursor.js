@@ -1259,6 +1259,7 @@ class OrbitControls extends EventDispatcher {
 		scope.domElement.addEventListener( 'pointerdown', onPointerDown );
 		scope.domElement.addEventListener( 'pointercancel', onPointerCancel );
 		scope.domElement.addEventListener( 'wheel', onMouseWheel, { passive: false } );
+
 		// ZOOM-TO-CURSOR
 		scope.domElement.addEventListener( 'mousemove', event => {
 			if(!scope.zoomToCursor) return;
@@ -1270,6 +1271,30 @@ class OrbitControls extends EventDispatcher {
 				)
 			);
 		});
+
+		const handleTouch = event => {
+			const touches = event.touches;
+			let touch;
+			if(touches.length === 1){
+				touch = new Vector2(touches[0].clientX, touches[0].clientY);		
+			}
+			else if(touches.length === 2){
+				touch = new Vector2((touches[0].clientX + touches[1].clientX) / 2, (touches[0].clientY + touches[1].clientY) / 2);
+			}
+
+			if(touch !== undefined){
+				scope.cursorScreen.copy(
+					new Vector3(
+						((touch.x) / scope.domElement.clientWidth) * 2 - 1,
+						- ((touch.y) / scope.domElement.clientHeight) * 2 + 1,
+						scope.target.clone().project(scope.object).z
+					)
+				);	
+			}
+		};
+
+		scope.domElement.addEventListener( 'touchstart', handleTouch);
+		scope.domElement.addEventListener( 'touchmove', handleTouch);
 		//
 
 		// force an update at start
