@@ -33,8 +33,6 @@ Adding <b>OrbitControlsZoomToCursor.js</b> to your project:
 
     // ADDING CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.minPolarAngle = 0;
-    controls.maxPolarAngle = Math.PI / 2;
     //IMPORTANT, enabling zooming to cursor
     controls.zoomToCursor = true;
 <br>
@@ -42,8 +40,6 @@ Adding <b>OrbitControlsZoomToCursor.js</b> to your project:
 
     // ADDING CONTROLS
     const controls = new MapControls(camera, renderer.domElement);
-    controls.minPolarAngle = 0;
-    controls.maxPolarAngle = Math.PI / 2;
     //IMPORTANT, enabling zooming to cursor
     controls.zoomToCursor = true;
 <br>
