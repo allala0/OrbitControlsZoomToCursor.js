@@ -101,8 +101,8 @@ class OrbitControls extends EventDispatcher {
 		// ZOOM-TO-CURSOR
 		this.cursorScreen = new Vector3();
 		this.cursorWorld = new Vector3();
-		this.zoomToCursor = false;
-		this.waitingForZoom = false;
+		this.enableZoomToCursor = false;
+		this.adjustmentAfterZoomNeeded = false;
 		//
 
 		//
@@ -110,7 +110,7 @@ class OrbitControls extends EventDispatcher {
 		//
 
 		// ZOOM-TO-CURSOR
-		this.handleZoomToCursor = function () {
+		this.adjustAfterZoom = function () {
 			const newCursorWorld = new Vector3(scope.cursorScreen.x, scope.cursorScreen.y, scope.target.clone().project(scope.object).z).clone().unproject(scope.object);
 			const delta = new Vector3().subVectors(scope.cursorWorld, newCursorWorld);
 		
@@ -300,11 +300,13 @@ class OrbitControls extends EventDispatcher {
 					8 * ( 1 - lastQuaternion.dot( scope.object.quaternion ) ) > EPS ) {
 
 					scope.dispatchEvent( _changeEvent );
-
-					if(scope.zoomToCursor && scope.waitingForZoom && scope.object.isPerspectiveCamera){
-						scope.waitingForZoom = false;
-						this.handleZoomToCursor();
+					
+					// ZOOM-TO-CURSOR
+					if(scope.enableZoomToCursor && scope.adjustmentAfterZoomNeeded){
+						scope.adjustmentAfterZoomNeeded = false;
+						this.adjustAfterZoom();
 					}
+					//
 
 					lastPosition.copy( scope.object.position );
 					lastQuaternion.copy( scope.object.quaternion );
@@ -493,7 +495,7 @@ class OrbitControls extends EventDispatcher {
 
 		function dollyOut( dollyScale ) {
 			// ZOOM-TO-CURSOR
-			if(scope.zoomToCursor) scope.setCursorWorld();
+			if(scope.enableZoomToCursor) scope.setCursorWorld();
 			//
 
 			if ( scope.object.isPerspectiveCamera ) {
@@ -514,16 +516,16 @@ class OrbitControls extends EventDispatcher {
 			}
 
 			// ZOOM-TO-CURSOR
-			if(scope.zoomToCursor && scope.object.isOrthographicCamera){
-				scope.handleZoomToCursor();
+			if(scope.enableZoomToCursor){
+				if( scope.object.isOrthographicCamera) scope.adjustAfterZoom();
+				else if(scope.object.isPerspectiveCamera) scope.adjustmentAfterZoomNeeded = true;
 			}
-			if(scope.zoomToCursor && scope.object.isPerspectiveCamera) scope.waitingForZoom = true;
 			//
 		}
 
 		function dollyIn( dollyScale ) {
 			// ZOOM-TO-CURSOR
-			if(scope.zoomToCursor) scope.setCursorWorld();
+			if(scope.enableZoomToCursor) scope.setCursorWorld();
 			//
 			
 			if ( scope.object.isPerspectiveCamera ) {
@@ -544,10 +546,10 @@ class OrbitControls extends EventDispatcher {
 			}
 
 			// ZOOM-TO-CURSOR
-			if(scope.zoomToCursor && scope.object.isOrthographicCamera){
-				scope.handleZoomToCursor();
+			if(scope.enableZoomToCursor){
+				if( scope.object.isOrthographicCamera) scope.adjustAfterZoom();
+				else if(scope.object.isPerspectiveCamera) scope.adjustmentAfterZoomNeeded = true;
 			}
-			if(scope.zoomToCursor && scope.object.isPerspectiveCamera) scope.waitingForZoom = true;
 			//
 		}
 
@@ -1262,11 +1264,11 @@ class OrbitControls extends EventDispatcher {
 
 		// ZOOM-TO-CURSOR
 		scope.domElement.addEventListener( 'mousemove', event => {
-			if(!scope.zoomToCursor) return;
+			if(!scope.enableZoomToCursor) return;
 			scope.cursorScreen.copy(
 				new Vector3(
-					((event.clientX) / scope.domElement.clientWidth) * 2 - 1,
-					- ((event.clientY) / scope.domElement.clientHeight) * 2 + 1,
+					((event.clientX - container.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
+					- ((event.clientY - container.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
 					scope.target.clone().project(scope.object).z
 				)
 			);
@@ -1285,8 +1287,8 @@ class OrbitControls extends EventDispatcher {
 			if(touch !== undefined){
 				scope.cursorScreen.copy(
 					new Vector3(
-						((touch.x) / scope.domElement.clientWidth) * 2 - 1,
-						- ((touch.y) / scope.domElement.clientHeight) * 2 + 1,
+						((touch.x - container.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
+						- ((touch.y - container.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
 						scope.target.clone().project(scope.object).z
 					)
 				);	

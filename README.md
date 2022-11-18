@@ -34,17 +34,17 @@ Adding <b>OrbitControlsZoomToCursor.js</b> to your project:
     // ADDING CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     //IMPORTANT, enabling zooming to cursor
-    controls.zoomToCursor = true;
+    controls.enableZoomToCursor = true;
 <br>
 <b>MapControls</b> example:
 
     // ADDING CONTROLS
     const controls = new MapControls(camera, renderer.domElement);
     //IMPORTANT, enabling zooming to cursor
-    controls.zoomToCursor = true;
+    controls.enableZoomToCursor = true;
 <br>
 
-Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> property of controls to true, by default zoomToCursor is set to false, and controls are working identical as original ones from three.js examples.
+Notice that, to enable zooming to cursor, you need to set <b>enableZoomToCursor</b> property of controls to true, by default enableZoomToCursor is set to false, and controls are working identical as original ones from three.js examples.
 
 <br>
 <h2>Example scene with <b>OrbitControlsZoomToCursor.js</b></h2>
@@ -58,8 +58,8 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
 
     function resize(){
         renderer.setPixelRatio(window.devicePixelRatio);
-        const width = document.body.clientWidth;
-        const height = document.body.clientHeight;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
         renderer.setSize(width, height);
         camera.aspect = width / height;
 
@@ -80,9 +80,14 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
     const camera = new THREE.OrthographicCamera();
 
     const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-    renderer.setSize(document.body.clientWidth, document.body.clientHeight);
-    document.body.appendChild(renderer.domElement);
+    const container = document.getElementById("container")
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
     resize();
+
+    container.addEventListener('resize', e => {
+        resize();
+    });
 
     camera.position.set(1, 1, 1);
     camera.lookAt(new THREE.Vector3);
@@ -92,9 +97,7 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI / 2;
     //IMPORTANT, enabling zooming to cursor
-    controls.zoomToCursor = true;
-
-    const mouse = new THREE.Vector2(0, 0);
+    controls.enableZoomToCursor = true;
 
     // ADDING STATS BOX
     const stats = new Stats();
@@ -102,7 +105,7 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
     document.body.appendChild(stats.dom);
 
     const gui = new GUI();
-    gui.add(controls, 'zoomToCursor')
+    gui.add(controls, 'enableZoomToCursor')
 
     const size = 1;
     const divisions = 10;
@@ -124,15 +127,6 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
     cube.position.z = 0.25;
 
 
-    window.addEventListener('resize', e => {
-        resize();
-    });
-
-    window.addEventListener('mousemove', e => {
-        mouse.x = ((e.clientX) / document.body.clientWidth) * 2 - 1;
-        mouse.y = - ((e.clientY) / document.body.clientHeight) * 2 + 1;
-    });
-
     // CREATING ANIMATION LOOP.
     function animate() {
         stats.begin();
@@ -147,6 +141,7 @@ Notice that, to enable zooming to cursor, you need to set <b>zoomToCursor</b> pr
     };
 
     animate();
+
 
 You can find this code in <b>examples/example.js</b>. To run this code, run <b>server.exe</b>, and in browser go to <b><a target="_blank" href="http://localhost/examples/example.html">localhost/examples/example.html</a></b>
 
