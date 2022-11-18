@@ -1267,8 +1267,8 @@ class OrbitControls extends EventDispatcher {
 			if(!scope.enableZoomToCursor) return;
 			scope.cursorScreen.copy(
 				new Vector3(
-					((event.clientX - container.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
-					- ((event.clientY - container.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
+					((event.clientX - scope.domElement.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
+					- ((event.clientY - scope.domElement.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
 					scope.target.clone().project(scope.object).z
 				)
 			);
@@ -1287,8 +1287,8 @@ class OrbitControls extends EventDispatcher {
 			if(touch !== undefined){
 				scope.cursorScreen.copy(
 					new Vector3(
-						((touch.x - container.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
-						- ((touch.y - container.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
+						((touch.x - scope.domElement.offsetLeft + window.scrollX) / scope.domElement.clientWidth) * 2 - 1,
+						- ((touch.y - scope.domElement.offsetTop + window.scrollY) / scope.domElement.clientHeight) * 2 + 1,
 						scope.target.clone().project(scope.object).z
 					)
 				);	
