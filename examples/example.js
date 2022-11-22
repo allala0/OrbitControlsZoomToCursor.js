@@ -37,14 +37,15 @@ window.addEventListener('resize', e => resize(e));
 resize();
 
 camera.position.set(1, 1, 1);
-camera.lookAt(new THREE.Vector3);
 
 // ADDING CONTROLS
+// const controls = new MapControls(camera, renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minPolarAngle = 0;
 controls.maxPolarAngle = Math.PI / 2;
 //IMPORTANT, enabling zooming to cursor
 controls.enableZoomToCursor = true;
+// controls.maxTargetDistanceFromOrigin = 0.5;
 
 // ADDING STATS BOX
 const stats = new Stats();
@@ -53,6 +54,10 @@ document.body.appendChild(stats.dom);
 
 const gui = new GUI();
 gui.add(controls, 'enableZoomToCursor')
+gui.domElement.style.position = "absolute";
+gui.domElement.style.top = 0;
+gui.domElement.style.right = 0;
+container.appendChild(gui.domElement);
 
 const size = 1;
 const divisions = 10;

@@ -42,15 +42,21 @@ Adding <b>OrbitControlsZoomToCursor.js</b> to your project:
     const controls = new MapControls(camera, renderer.domElement);
     //IMPORTANT, enabling zooming to cursor
     controls.enableZoomToCursor = true;
-<br>
+    // setting maximum target distance from origin 
+    controls.maxTargetDistanceFromOrigin = 2;
+
 
 Notice that, to enable zooming to cursor, you need to set <b>enableZoomToCursor</b> property of controls to true, by default enableZoomToCursor is set to false, and controls are working identical as original ones from three.js examples.
-
 <br>
+
+For <b>MapControls</b>, it is recomended to set <b>maxTargetDistanceFromOrigin</b> value, because in <b>MapControls</b> camera pans in the plane orthogonal to the camera's up direction, and zooming to cursor, while keeping camera in the plane orthogonal to the camera's up direction can result in moving controls target vector to really big coordinates. By default <b>maxTargetDistanceFromOrigin</b> is set to <b>Infinity</b>.
+<br>
+<br>
+
 <h2>Example scene with <b>OrbitControlsZoomToCursor.js</b></h2>
 
     import * as THREE from 'three';
-    import {OrbitControls} from '../OrbitControlsZoomToCursor.js';
+    import {OrbitControls, MapControls} from '../OrbitControlsZoomToCursor.js';
     import {GUI} from './lib/three.js/lil-gui.module.min.js';
     import Stats from './lib/three.js/stats.module.js';
 
@@ -83,21 +89,20 @@ Notice that, to enable zooming to cursor, you need to set <b>enableZoomToCursor<
     const container = document.getElementById("container")
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', e => resize(e));
     resize();
 
-    container.addEventListener('resize', e => {
-        resize();
-    });
-
     camera.position.set(1, 1, 1);
-    camera.lookAt(new THREE.Vector3);
 
     // ADDING CONTROLS
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new MapControls(camera, renderer.domElement);
+    // const controls = new OrbitControls(camera, renderer.domElement);
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI / 2;
     //IMPORTANT, enabling zooming to cursor
     controls.enableZoomToCursor = true;
+    controls.maxTargetDistanceFromOrigin = 2;
 
     // ADDING STATS BOX
     const stats = new Stats();
@@ -141,6 +146,7 @@ Notice that, to enable zooming to cursor, you need to set <b>enableZoomToCursor<
     };
 
     animate();
+
 
 
 You can find this code in <b>examples/example.js</b>. To run this code, run <b>server.exe</b>, and in browser go to <b><a target="_blank" href="http://localhost/examples/example.html">localhost/examples/example.html</a></b>
